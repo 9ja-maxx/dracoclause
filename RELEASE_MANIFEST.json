@@ -6,9 +6,9 @@
     "chainId": 61999,
     "rpcUrl": "https://studio.genlayer.com/api",
     "symbol": "GEN",
-    "deployedAddress": "0x2cf548F7Ec57c58b014ee98466852db63d1D9878",
+    "deployedAddress": "0xc37cA9BA85398b296af20519f474717937A57145",
     "studioUrl": "https://studio.genlayer.com",
-    "explorerUrl": "https://explorer-studio.genlayer.com/address/0x2cf548F7Ec57c58b014ee98466852db63d1D9878"
+    "explorerUrl": "https://explorer-studio.genlayer.com/address/0xc37cA9BA85398b296af20519f474717937A57145"
   },
   "author": "9ja_maxx",
   "repository": "https://github.com/9ja-maxx/dracoclause",
