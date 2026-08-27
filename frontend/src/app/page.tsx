@@ -1,27 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Header } from "@/components/Header";
 import { DragonRadar } from "@/components/DragonRadar";
-import { MandateExplorer, DEMO_MANDATES, MandateDemoData } from "@/components/MandateExplorer";
-import { SemanticDiffInspector } from "@/components/SemanticDiffInspector";
-import { AgentSimulator } from "@/components/AgentSimulator";
+import { MandateWorkspace } from "@/components/MandateWorkspace";
 import { TransactionCenter } from "@/components/TransactionCenter";
-import { Flame, Shield, Activity, ChevronRight } from "lucide-react";
+import { Flame, Shield, ChevronRight } from "lucide-react";
 import { DRACO_STUDIO_URL, GENLAYER_STUDIONET_CHAIN_ID } from "@/lib/contract/config";
 
 export default function Home() {
-  const [selectedMandate, setSelectedMandate] = useState<MandateDemoData>(DEMO_MANDATES[0]);
-
   return (
     <div className="min-h-screen bg-[#030407] text-[#f8fafc] selection:bg-rose-500/30 selection:text-rose-200 pb-20">
-      {/* Decorative Top Mesh/Grid Background */}
+      {/* Decorative Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none h-[600px]" />
       
       <Header />
 
       <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-16 relative z-10">
-        {/* Dynamic Premium Hero */}
+        {/* Hero Section */}
         <section className="relative overflow-hidden rounded-3xl border border-red-950/20 bg-gradient-to-b from-[#0a0b10]/90 to-[#030407]/99 p-8 sm:p-14 shadow-2xl">
           {/* Ambient Glows */}
           <div className="absolute -right-32 -top-32 size-[400px] rounded-full bg-rose-600/5 blur-[120px] pointer-events-none glow-orb" />
@@ -34,9 +30,9 @@ export default function Home() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1] font-sans">
-              Autonomous AI Agent<br />
+              Capability Mandates.<br />
               <span className="bg-gradient-to-r from-rose-500 via-amber-400 to-orange-500 bg-clip-text text-transparent">
-                Capability Charters.
+                Dragon-Tier Semantic Guard.
               </span>
             </h1>
 
@@ -74,27 +70,14 @@ export default function Home() {
           <div className="flex items-center justify-between border-b border-zinc-900 pb-3">
             <div className="flex items-center gap-3">
               <div className="size-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(225,29,72,0.8)]" />
-              <h2 className="text-xl font-extrabold text-white tracking-tight">Sovereign Control Panel</h2>
+              <h2 className="text-xl font-extrabold text-white tracking-tight">Sovereign Control Panel Workspace</h2>
             </div>
             <span className="text-[11px] text-zinc-500 font-mono tracking-wider uppercase">Decentralized Sentinel v1.0</span>
           </div>
 
-          {/* Mandate selection & full explorer */}
-          <MandateExplorer
-            selectedMandate={selectedMandate}
-            onSelectMandate={setSelectedMandate}
-          />
+          {/* Interactive Workspace Forms */}
+          <MandateWorkspace />
         </div>
-
-        {/* Interactive Diffing and Telemetry Panel */}
-        <section className="space-y-6">
-          <SemanticDiffInspector mandate={selectedMandate} />
-        </section>
-
-        {/* Execution Guard Mock Terminal */}
-        <section className="space-y-6">
-          <AgentSimulator mandate={selectedMandate} />
-        </section>
       </main>
 
       <TransactionCenter />
