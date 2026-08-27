@@ -1,0 +1,227 @@
+[
+  {
+    "type": "function",
+    "name": "create_mandate",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "delegate",
+        "type": "string"
+      },
+      {
+        "name": "guardian",
+        "type": "string"
+      },
+      {
+        "name": "initial_mandate_text",
+        "type": "string"
+      },
+      {
+        "name": "charter_rules",
+        "type": "string"
+      },
+      {
+        "name": "review_ttl_seconds",
+        "type": "uint64"
+      },
+      {
+        "name": "consent_ttl_seconds",
+        "type": "uint64"
+      },
+      {
+        "name": "guardian_window_seconds",
+        "type": "uint64"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "propose_mandate_version",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "new_mandate_text",
+        "type": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "review_mandate_version",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "consent_to_mandate",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "finalize_guardian_challenge",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "veto_mandate",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      },
+      {
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "reject_mandate",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "recover_expired_mandate",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "get_mandate",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "meta",
+        "type": "dict"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "get_version",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "item",
+        "type": "dict"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "get_active_version",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "item",
+        "type": "dict"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "is_mandate_authorized",
+    "inputs": [
+      {
+        "name": "mandate_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "authorized",
+        "type": "bool"
+      }
+    ]
+  }
+]
