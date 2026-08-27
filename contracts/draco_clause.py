@@ -137,7 +137,7 @@ def _validate_semantic_audit_payload(value: typing.Any) -> bool:
         return False
 
     # Invariant: Critical restriction removal or hazardous drift triggers guardian window
-    if semantic_class == SEVERITY_RESTRICTION_REMOVAL and not requires_guardian_window:
+    if (semantic_class == SEVERITY_RESTRICTION_REMOVAL or semantic_class == SEVERITY_HAZARDOUS_DRIFT) and not requires_guardian_window:
         return False
 
     return True

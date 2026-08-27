@@ -300,3 +300,40 @@ def test_permissionless_expiry_recovery(direct_vm, direct_deploy, direct_owner, 
     assert contract.get_version(MANDATE_ID, ver)["status"] == "EXPIRED"
     assert contract.get_mandate(MANDATE_ID)["active_version"] == 1
     assert contract.is_mandate_authorized(MANDATE_ID, ver) is False
+
+
+def test_hazardous_drift_requires_guardian_window(direct_vm, direct_deploy, direct_owner, direct_alice, direct_bob):
+    direct_vm.warp("2026-08-27T10:00:00+00:00")
+    contract = deploy_draco(direct_deploy)
+    setup_mandate(contract, direct_vm, direct_owner, direct_alice, direct_bob)
+
+    with direct_vm.prank(direct_alice):
+        ver = contract.propose_mandate_version(MANDATE_ID, V2_CRITICAL_REMOVAL)
+
+    # Mock semantic audit resulting in HAZARDOUS_ADVERSARIAL_DRIFT with guardian window
+    mock_dragon_audit(direct_vm, True, True, "HAZARDOUS_ADVERSARIAL_DRIFT", 95)
+    contract.review_mandate_version(MANDATE_ID, ver)
+
+    with direct_vm.prank(direct_owner):
+        contract.consent_to_mandate(MANDATE_ID, ver)
+
+    reviewed = contract.get_version(MANDATE_ID, ver)
+    assert reviewed["status"] == "IN_GUARDIAN_CHALLENGE"
+    assert reviewed["requires_guardian_window"] is True
+    assert contract.is_mandate_authorized(MANDATE_ID, ver) is False
+
+
+def test_hazardous_drift_without_guardian_window_reverts(direct_vm, direct_deploy, direct_owner, direct_alice, direct_bob):
+    contract = deploy_draco(direct_deploy)
+    setup_mandate(contract, direct_vm, direct_owner, direct_alice, direct_bob)
+
+    with direct_vm.prank(direct_alice):
+        ver = contract.propose_mandate_version(MANDATE_ID, V2_CRITICAL_REMOVAL)
+
+    # Mock semantic audit resulting in HAZARDOUS_ADVERSARIAL_DRIFT but incorrectly setting requires_guardian_window to False
+    mock_dragon_audit(direct_vm, True, False, "HAZARDOUS_ADVERSARIAL_DRIFT", 95)
+    
+    with pytest.raises(Exception) as excinfo:
+        contract.review_mandate_version(MANDATE_ID, ver)
+    
+    assert "MALFORMED_SEMANTIC_AUDIT_RESULT" in str(excinfo.value)

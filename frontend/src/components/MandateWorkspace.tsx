@@ -197,6 +197,19 @@ export function MandateWorkspace() {
     } catch {}
   };
 
+  const handleFinalizeChallenge = async () => {
+    if (!mandateData) return;
+    try {
+      await submitMandateWrite({
+        functionName: "finalize_guardian_challenge",
+        args: [searchId, mandateData.open_version],
+        title: "Finalize Guardian Challenge for v" + mandateData.open_version,
+        mandateId: searchId,
+        version: mandateData.open_version
+      });
+    } catch {}
+  };
+
   const handleRejectMandate = async () => {
     if (!mandateData) return;
     try {
@@ -581,6 +594,16 @@ export function MandateWorkspace() {
                         >
                           <ShieldAlert className="size-4 text-red-500" />
                           <span>Execute Guardian Veto</span>
+                        </button>
+                      )}
+
+                      {proposedVersionData.status === "IN_GUARDIAN_CHALLENGE" && (
+                        <button
+                          onClick={handleFinalizeChallenge}
+                          className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-2.5 text-xs font-bold text-emerald-600 transition hover:bg-emerald-500/20"
+                        >
+                          <CheckCircle className="size-4" />
+                          <span>Finalize Challenge Window</span>
                         </button>
                       )}
 
