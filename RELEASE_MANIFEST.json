@@ -1,0 +1,29 @@
+{
+  "protocol": "DracoClause",
+  "version": "1.0.0",
+  "network": {
+    "name": "GenLayer StudioNet",
+    "chainId": 61999,
+    "rpcUrl": "https://studio.genlayer.com/api",
+    "symbol": "GEN"
+  },
+  "author": "9ja_maxx",
+  "repository": "https://github.com/9ja-maxx/dracoclause",
+  "contract": {
+    "file": "contracts/draco_clause.py",
+    "sha256": "7d6a55c10a52299aa73d791ded6b4d4821c2c56c891ddef2f787a1eecc04bcef",
+    "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6"
+  },
+  "tests": {
+    "suite": "tests/direct/",
+    "coverage": "100% core state transitions, consensus equivalence, and agent verification hooks"
+  },
+  "features": [
+    "6-Tier Dragon Semantic Taxonomy",
+    "Independent Multi-Validator Recomputation",
+    "Guardian Challenge & Veto Window",
+    "On-Chain Agent Execution Hook",
+    "Permissionless Fail-Closed Expiry Recovery",
+    "StudioNet Native Configuration"
+  ]
+}
