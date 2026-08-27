@@ -7,11 +7,12 @@
 [![Network](https://img.shields.io/badge/Network-GenLayer_StudioNet-red?style=for-the-badge&logo=ethereum)](https://studio.genlayer.com)
 [![Chain ID](https://img.shields.io/badge/Chain_ID-61999-amber?style=for-the-badge)](https://studio.genlayer.com)
 [![Contract](https://img.shields.io/badge/Contract-0x2cf5...9878-emerald?style=for-the-badge)](https://explorer-studio.genlayer.com/address/0x2cf548F7Ec57c58b014ee98466852db63d1D9878)
+[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)](docs/VERCEL_DEPLOYMENT_GUIDE.md)
 [![License](https://img.shields.io/badge/License-MIT-zinc?style=for-the-badge)](LICENSE)
 
 ---
 
-## ⚡ Live StudioNet Deployment
+## ⚡ Live StudioNet Deployment & RPC Parameters
 
 | Parameter | Specification Value |
 |---|---|
@@ -23,6 +24,18 @@
 | **Intelligent Contract** | [`contracts/draco_clause.py`](contracts/draco_clause.py) |
 | **Consensus Engine** | GenLayer Multi-Validator Equivalence Consensus (`gl.vm.run_nondet_unsafe`) |
 | **Direct Unit Tests** | [`tests/direct/test_dracoclause.py`](tests/direct/test_dracoclause.py) |
+
+---
+
+## 🚀 Deploy Frontend to Vercel in 2 Minutes
+
+1. Import the repository **`9ja-maxx/dracoclause`** in [Vercel Dashboard](https://vercel.com/new).
+2. Set the **Root Directory** to `frontend` (or leave default as `vercel.json` is pre-configured).
+3. Add the following Environment Variables:
+   - `NEXT_PUBLIC_DRACO_CLAUSE_ADDRESS` = `0x2cf548F7Ec57c58b014ee98466852db63d1D9878`
+   - `NEXT_PUBLIC_GENLAYER_RPC_URL` = `https://studio.genlayer.com/api`
+   - `NEXT_PUBLIC_GENLAYER_CHAIN_ID` = `61999`
+4. Click **Deploy**! Full details in [`docs/VERCEL_DEPLOYMENT_GUIDE.md`](docs/VERCEL_DEPLOYMENT_GUIDE.md).
 
 ---
 
