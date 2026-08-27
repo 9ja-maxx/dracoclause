@@ -6,14 +6,13 @@ import { useMandateWrite } from "@/hooks/use-mandate-write";
 import { readClient } from "@/lib/genlayer/client";
 import { DRACO_CLAUSE_ADDRESS } from "@/lib/contract/config";
 import { truncateAddress } from "@/lib/utils";
-import { PlusCircle, Send, CheckCircle, AlertTriangle, ShieldAlert, Sparkles, RefreshCw, Layers, ShieldCheck, Clock, Ban } from "lucide-react";
+import { PlusCircle, Send, CheckCircle, AlertTriangle, ShieldAlert, Sparkles, RefreshCw, Layers, ShieldCheck, Clock, Ban, HelpCircle, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
 
 export function MandateWorkspace() {
   const { address, isConnected } = useWallet();
   const { submitMandateWrite } = useMandateWrite();
 
-  // Active view: "REGISTRY" | "CREATE"
   const [activeTab, setActiveTab] = useState<"REGISTRY" | "CREATE">("REGISTRY");
 
   // Create Mandate State
@@ -49,12 +48,33 @@ export function MandateWorkspace() {
     }
   }, [address]);
 
+  // Load a preset template to make testing instant and simple
+  const handleLoadTemplate = () => {
+    if (!address) {
+      toast.warning("Please connect your Web3 wallet first");
+      return;
+    }
+    setCreateForm({
+      mandateId: "sentinel-" + Math.floor(Math.random() * 1000),
+      delegate: address,
+      guardian: address,
+      initialText: "The sentinel agent may rebalance USDC and DAI liquidity pools across Aave v3 with a maximum 24h drawdown limit of 500 GEN and maximum slippage of 0.5%. Emergency pause remains active.",
+      charterRules: "Re-consent is strictly required whenever the agent increases maximum slippage, expands the 24-hour spending/drawdown envelope, or removes emergency pause capabilities.",
+      reviewTtl: 3600,
+      consentTtl: 3600,
+      guardianWindow: 300
+    });
+    toast.info("Pre-filled template rules into form");
+  };
+
   // Fetch Mandate details from the contract
   const fetchMandateDetails = async (idToSearch = searchId) => {
-    if (!idToSearch.strip()) return;
+    if (!idToSearch.strip()) {
+      toast.error("Please enter a mandate ID");
+      return;
+    }
     setLoading(true);
     try {
-      // 1. Get mandate metadata
       const metaRes: any = await (readClient as any).readContract({
         address: DRACO_CLAUSE_ADDRESS,
         functionName: "get_mandate",
@@ -71,7 +91,6 @@ export function MandateWorkspace() {
 
       setMandateData(metaRes);
 
-      // 2. Fetch active version details
       const activeVerRes = await (readClient as any).readContract({
         address: DRACO_CLAUSE_ADDRESS,
         functionName: "get_version",
@@ -79,7 +98,6 @@ export function MandateWorkspace() {
       });
       setActiveVersionData(activeVerRes);
 
-      // 3. Fetch open/proposed version details if it exists
       if (metaRes.open_version > 0) {
         const proposedVerRes = await (readClient as any).readContract({
           address: DRACO_CLAUSE_ADDRESS,
@@ -94,7 +112,7 @@ export function MandateWorkspace() {
       toast.success("Loaded mandate details");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to fetch mandate from GenLayer StudioNet");
+      toast.error("Failed to fetch mandate details");
     } finally {
       setLoading(false);
     }
@@ -145,7 +163,7 @@ export function MandateWorkspace() {
     }
   };
 
-  // Submit Review Mandate
+  // Review
   const handleReviewMandate = async () => {
     if (!mandateData) return;
     try {
@@ -159,7 +177,7 @@ export function MandateWorkspace() {
     } catch {}
   };
 
-  // Submit Consent to Mandate
+  // Consent
   const handleConsentMandate = async () => {
     if (!mandateData) return;
     try {
@@ -173,14 +191,13 @@ export function MandateWorkspace() {
     } catch {}
   };
 
-  // Submit Veto
+  // Veto
   const handleVetoMandate = async () => {
     if (!mandateData) return;
     try {
       await submitMandateWrite({
-        // Vetoes open version
         functionName: "veto_mandate",
-        args: [searchId, mandateData.open_version, "Guardian Security Veto: Parameters override safety charter"],
+        args: [searchId, mandateData.open_version, "Guardian Veto: Parameter drift violates active charter"],
         title: "Guardian Veto on Mandate v" + mandateData.open_version,
         mandateId: searchId,
         version: mandateData.open_version
@@ -188,7 +205,7 @@ export function MandateWorkspace() {
     } catch {}
   };
 
-  // Submit Reject
+  // Reject
   const handleRejectMandate = async () => {
     if (!mandateData) return;
     try {
@@ -202,7 +219,7 @@ export function MandateWorkspace() {
     } catch {}
   };
 
-  // Submit Expiry Recovery
+  // Recover
   const handleRecoverMandate = async () => {
     if (!mandateData) return;
     try {
@@ -216,13 +233,61 @@ export function MandateWorkspace() {
     } catch {}
   };
 
+  // Detect active role of the connected address relative to loaded mandate
+  const getConnectedRoleName = () => {
+    if (!address || !mandateData) return "Guest";
+    const userAddr = address.toLowerCase();
+    if (userAddr === mandateData.principal.toLowerCase()) return "Principal (Owner)";
+    if (userAddr === mandateData.delegate.toLowerCase()) return "Delegate (AI Agent)";
+    if (userAddr === mandateData.guardian.toLowerCase()) return "Guardian (Sentinel)";
+    return "Observer";
+  };
+
   return (
     <div className="space-y-8">
-      {/* Workspace Tabs */}
+      {/* 🧭 Visual Onboarding Stepper Guide */}
+      <section className="draco-card rounded-2xl p-6 bg-rose-950/5 border border-rose-500/10">
+        <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-4 flex items-center gap-2">
+          <HelpCircle className="size-4 text-rose-400" />
+          <span>Interactive Quick Start Path</span>
+        </h4>
+        <div className="grid gap-4 md:grid-cols-4 text-xs font-light leading-relaxed text-zinc-400">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-bold text-zinc-200">
+              <span className="flex size-5 items-center justify-center rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px]">1</span>
+              <span>Connect Wallet</span>
+            </div>
+            <p>Connect your browser wallet to the GenLayer StudioNet network (Chain ID 61999).</p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-bold text-zinc-200">
+              <span className="flex size-5 items-center justify-center rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px]">2</span>
+              <span>Register Mandate</span>
+            </div>
+            <p>Go to the Register tab, load a prefilled template, and deploy it to the blockchain.</p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-bold text-zinc-200">
+              <span className="flex size-5 items-center justify-center rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px]">3</span>
+              <span>Query Mandate</span>
+            </div>
+            <p>Under the Registry tab, type your Mandate ID and query the latest state.</p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 font-bold text-zinc-200">
+              <span className="flex size-5 items-center justify-center rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px]">4</span>
+              <span>Propose & Audit</span>
+            </div>
+            <p>Submit a new mandate text, run validator review, and check the semantic taxonomy consensus.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Tabs */}
       <div className="flex items-center gap-3 border-b border-zinc-900 pb-4">
         <button
           onClick={() => setActiveTab("REGISTRY")}
-          className={"flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition " +
+          className={"flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition " +
             (activeTab === "REGISTRY"
               ? "bg-rose-500/10 text-rose-400 border border-rose-500/20"
               : "text-zinc-400 hover:text-white")}
@@ -232,7 +297,7 @@ export function MandateWorkspace() {
         </button>
         <button
           onClick={() => setActiveTab("CREATE")}
-          className={"flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition " +
+          className={"flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition " +
             (activeTab === "CREATE"
               ? "bg-rose-500/10 text-rose-400 border border-rose-500/20"
               : "text-zinc-400 hover:text-white")}
@@ -242,14 +307,27 @@ export function MandateWorkspace() {
         </button>
       </div>
 
+      {/* Tab: Create Mandate */}
       {activeTab === "CREATE" && (
         <form onSubmit={handleCreateMandate} className="draco-card rounded-2xl p-6 space-y-5">
-          <h3 className="font-bold text-white text-base">Register Agent Capability Mandate</h3>
-          <p className="text-xs text-zinc-400 font-light">Establish a new semantic control plane for an autonomous delegate.</p>
+          <div className="flex items-center justify-between gap-4 border-b border-zinc-900 pb-4">
+            <div>
+              <h3 className="font-bold text-white text-base">Register Capability Mandate</h3>
+              <p className="text-xs text-zinc-400 font-light mt-0.5">Register agent parameters, rules, and governance roles.</p>
+            </div>
+            <button
+              type="button"
+              onClick={handleLoadTemplate}
+              className="flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-2 text-xs font-bold text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+            >
+              <Sparkles className="size-3.5 text-amber-400" />
+              <span>Load Template Example</span>
+            </button>
+          </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Unique Mandate ID</label>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Mandate Unique ID</label>
               <input
                 type="text"
                 required
@@ -259,7 +337,7 @@ export function MandateWorkspace() {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Delegate (Agent Address)</label>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Delegate (Agent Wallet Address)</label>
               <input
                 type="text"
                 required
@@ -270,7 +348,7 @@ export function MandateWorkspace() {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Guardian (Safety Sentinel Address)</label>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Guardian (Sentinel Wallet Address)</label>
               <input
                 type="text"
                 required
@@ -302,7 +380,7 @@ export function MandateWorkspace() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-semibold text-zinc-400 mb-2">Guardian Window (s)</label>
+                <label className="block text-[10px] font-semibold text-zinc-400 mb-2">Guardian Veto (s)</label>
                 <input
                   type="number"
                   required
@@ -315,14 +393,14 @@ export function MandateWorkspace() {
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Initial Mandate Text (Natural Language Rules)</label>
+            <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Initial Capability Text (Natural Language Rules)</label>
             <textarea
               required
-              rows={4}
+              rows={3}
               value={createForm.initialText}
               onChange={e => setCreateForm({...createForm, initialText: e.target.value})}
               className="w-full rounded-xl border border-zinc-800 bg-black/60 px-4 py-2.5 text-xs text-white focus:border-rose-500/40 focus:outline-none"
-              placeholder="e.g., The sentinel agent may rebalance USDC and DAI pools with daily drawdown limit of 500 GEN..."
+              placeholder="e.g. Daily drawdown limit of 500 GEN on Aave v3..."
             />
           </div>
 
@@ -334,7 +412,7 @@ export function MandateWorkspace() {
               value={createForm.charterRules}
               onChange={e => setCreateForm({...createForm, charterRules: e.target.value})}
               className="w-full rounded-xl border border-zinc-800 bg-black/60 px-4 py-2.5 text-xs text-white focus:border-rose-500/40 focus:outline-none"
-              placeholder="e.g., Drawdown ceiling increases require re-consent. Disabling circuit breakers is high risk..."
+              placeholder="e.g. Drawdown limit increases require principal consent..."
             />
           </div>
 
@@ -344,14 +422,15 @@ export function MandateWorkspace() {
             className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 px-5 py-3 text-xs font-bold text-white shadow-lg transition hover:scale-[1.01] disabled:opacity-50"
           >
             <PlusCircle className="size-4" />
-            <span>Submit Registration Transaction to StudioNet</span>
+            <span>Send Register Transaction</span>
           </button>
         </form>
       )}
 
+      {/* Tab: Registry */}
       {activeTab === "REGISTRY" && (
         <div className="space-y-6">
-          {/* Lookup Panel */}
+          {/* Query Lookup */}
           <div className="draco-card rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-4 justify-between">
             <div className="flex-1 w-full">
               <label className="block text-[10px] font-mono font-bold text-zinc-500 uppercase mb-2">Lookup Active Mandate ID</label>
@@ -360,32 +439,37 @@ export function MandateWorkspace() {
                 value={searchId}
                 onChange={e => setSearchId(e.target.value)}
                 className="w-full rounded-xl border border-zinc-850 bg-black/40 px-4 py-2.5 text-xs text-white focus:border-rose-500/40 focus:outline-none"
-                placeholder="Enter mandate ID..."
+                placeholder="e.g. yield-sentinel-alpha"
               />
             </div>
             <button
               onClick={() => fetchMandateDetails()}
               disabled={loading}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-zinc-900 border border-zinc-800 px-5 py-3 text-xs font-semibold text-white transition hover:bg-zinc-850 disabled:opacity-50 self-end"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-zinc-900 border border-zinc-800 px-5 py-3 text-xs font-semibold text-white transition hover:bg-zinc-850 disabled:opacity-55 self-end"
             >
               <RefreshCw className={"size-4 " + (loading ? "animate-spin" : "")} />
-              <span>Query StudioNet</span>
+              <span>Query Contract State</span>
             </button>
           </div>
 
-          {/* Stored Mandate Record */}
+          {/* Details & Interactive Actions */}
           {mandateData ? (
             <div className="space-y-6">
-              {/* Dossier Meta */}
+              {/* Active Version details */}
               <div className="draco-card rounded-2xl p-6 space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-900 pb-5">
                   <div>
                     <h3 className="font-bold text-white text-base tracking-tight">On-Chain Capability Dossier</h3>
                     <p className="text-xs text-zinc-500 font-mono mt-1">Principal Address: {truncateAddress(mandateData.principal)}</p>
                   </div>
-                  <span className="rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
-                    v{mandateData.active_version} Authorized
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="rounded-full border border-zinc-800 bg-zinc-900 px-3.5 py-1.5 text-[10px] font-bold font-mono text-zinc-400">
+                      Connected as: {getConnectedRoleName()}
+                    </span>
+                    <span className="rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                      v{mandateData.active_version} Authorized
+                    </span>
+                  </div>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3 text-xs font-mono">
@@ -398,14 +482,14 @@ export function MandateWorkspace() {
                     <span className="text-zinc-300">{truncateAddress(mandateData.guardian)}</span>
                   </div>
                   <div className="rounded-xl bg-black/40 p-4 border border-zinc-900/50">
-                    <div className="text-zinc-500 block text-[9px] uppercase tracking-wider mb-1">Consent Window</div>
-                    <span className="text-zinc-300">{mandateData.guardian_window_seconds} seconds</span>
+                    <div className="text-zinc-500 block text-[9px] uppercase tracking-wider mb-1">Guardian window</div>
+                    <span className="text-zinc-300">{mandateData.guardian_window_seconds}s</span>
                   </div>
                 </div>
 
                 {activeVersionData && (
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-mono font-bold text-zinc-500 uppercase">Active Mandate Rules</label>
+                    <label className="block text-[10px] font-mono font-bold text-zinc-500 uppercase">Active Rules & Parameters</label>
                     <div className="rounded-xl bg-black/60 p-4 border border-zinc-900/60 font-mono text-xs text-zinc-300 leading-relaxed">
                       {activeVersionData.mandate_text}
                     </div>
@@ -420,15 +504,15 @@ export function MandateWorkspace() {
                 </div>
               </div>
 
-              {/* Proposed Candidate Section */}
+              {/* Proposed Candidate & Telemetry */}
               <div className="draco-card rounded-2xl p-6 space-y-6">
                 <div className="flex items-center justify-between border-b border-zinc-900 pb-5">
-                  <div className="space-y-1">
+                  <div>
                     <h3 className="font-bold text-white text-base tracking-tight">Proposed Candidate Version</h3>
-                    <p className="text-xs text-zinc-400 font-light">Semantic Audit consensus tracker</p>
+                    <p className="text-xs text-zinc-400 font-light mt-0.5">Revision comparison and validator consensus telemetry</p>
                   </div>
                   {proposedVersionData ? (
-                    <span className="rounded-full border border-amber-500/20 bg-amber-500/5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-400 font-mono animate-pulse">
+                    <span className="rounded-full border border-amber-500/20 bg-amber-500/5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-400 font-mono">
                       v{proposedVersionData.version} {proposedVersionData.status.replace(/_/g, " ")}
                     </span>
                   ) : (
@@ -438,7 +522,6 @@ export function MandateWorkspace() {
 
                 {proposedVersionData ? (
                   <div className="space-y-5">
-                    {/* Diff/Text Block */}
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
                         <span className="block text-[9px] font-mono text-zinc-500 uppercase mb-2">v{activeVersionData?.version} Active Mandate</span>
@@ -454,7 +537,6 @@ export function MandateWorkspace() {
                       </div>
                     </div>
 
-                    {/* Metadata indicators */}
                     <div className="grid gap-3 sm:grid-cols-4 font-mono text-[10px]">
                       <div className="rounded-xl bg-black/30 p-3 border border-zinc-900">
                         <span className="text-zinc-500 block">Requires Consent</span>
@@ -474,7 +556,7 @@ export function MandateWorkspace() {
                       </div>
                     </div>
 
-                    {/* On-Chain Interactive State Actions */}
+                    {/* Action Panel */}
                     <div className="border-t border-zinc-900 pt-4 flex flex-wrap gap-2.5">
                       {proposedVersionData.status === "PROPOSED" && (
                         <button
@@ -526,21 +608,21 @@ export function MandateWorkspace() {
                   </div>
                 ) : (
                   <div className="py-6 text-center text-xs text-zinc-500 font-light border border-dashed border-zinc-900 rounded-xl">
-                    No candidate revision currently locked in. Propose a new text below.
+                    No proposed candidate rules currently locked in. Enter a revision text below to start.
                   </div>
                 )}
 
                 {/* Propose Revision Input Form */}
                 <form onSubmit={handleProposeVersion} className="border-t border-zinc-900 pt-6 space-y-4">
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Propose Mandate Revision (Candidate Text)</label>
+                    <label className="block text-[11px] font-semibold text-zinc-300 mb-2">Propose Mandate Revision (New Rules)</label>
                     <textarea
                       required
                       rows={3}
                       value={proposeText}
                       onChange={e => setProposeText(e.target.value)}
                       className="w-full rounded-xl border border-zinc-800 bg-black/60 px-4 py-2.5 text-xs text-white focus:border-rose-500/40 focus:outline-none"
-                      placeholder="Enter candidate mandate revision..."
+                      placeholder="e.g. Expand daily drawdown limit to 2500 GEN..."
                     />
                   </div>
                   <button
@@ -554,8 +636,8 @@ export function MandateWorkspace() {
               </div>
             </div>
           ) : (
-            <div className="py-20 text-center draco-card rounded-2xl border border-dashed border-zinc-800/80 p-8 text-zinc-500 font-light text-xs">
-              Enter a mandate ID above or select "Register New Mandate" to initialize one.
+            <div className="py-20 text-center draco-card rounded-2xl border border-dashed border-zinc-850 p-8 text-zinc-500 font-light text-xs">
+              Enter a mandate ID above (e.g. <span className="font-mono text-zinc-400">yield-sentinel-alpha</span>) or select "Register New Mandate" to get started.
             </div>
           )}
         </div>
