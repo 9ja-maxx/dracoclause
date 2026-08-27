@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { truncateAddress } from "@/lib/utils";
-import { ShieldCheck, Flame, ChevronRight, User, Key, Lock, CheckCircle, AlertTriangle, ShieldAlert, Sparkles, RefreshCw } from "lucide-react";
+import { ShieldCheck, Flame, User, Key, Lock, ShieldAlert, Sparkles } from "lucide-react";
 import { useMandateWrite } from "@/hooks/use-mandate-write";
 import { toast } from "sonner";
 
@@ -111,48 +111,48 @@ export function MandateExplorer({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Mandate Selection List */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {DEMO_MANDATES.map((m) => {
           const isSelected = m.id === selectedMandate.id;
           return (
             <div
               key={m.id}
               onClick={() => onSelectMandate(m)}
-              className={"cursor-pointer rounded-2xl border p-5 transition-all duration-300 " + 
+              className={"cursor-pointer rounded-2xl border p-6 transition-all duration-300 draco-card " + 
                 (isSelected
-                  ? "border-red-500/60 bg-gradient-to-br from-red-950/40 via-zinc-900/90 to-zinc-950 shadow-[0_0_30px_rgba(239,68,68,0.15)] ring-1 ring-red-500/40"
-                  : "border-zinc-800/80 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70")}
+                  ? "border-rose-500/50 bg-[#0a0b10] shadow-[0_0_30px_rgba(225,29,72,0.15)]"
+                  : "border-zinc-900 bg-zinc-950/40 hover:border-zinc-800")}
             >
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Flame className={"size-4 " + (isSelected ? "text-red-400 animate-pulse" : "text-zinc-500")} />
-                    <h4 className="font-bold text-white text-base">{m.name}</h4>
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2.5">
+                    <Flame className={"size-4.5 " + (isSelected ? "text-rose-500 animate-pulse" : "text-zinc-500")} />
+                    <h4 className="font-bold text-white text-base tracking-tight">{m.name}</h4>
                   </div>
-                  <p className="mt-1 text-xs text-zinc-400">ID: <span className="font-mono text-zinc-300">{m.id}</span></p>
+                  <p className="text-[11px] font-mono text-zinc-500">ID: <span className="text-zinc-300">{m.id}</span></p>
                 </div>
                 <span
-                  className={"rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider " +
+                  className={"rounded-full border px-3 py-0.5 text-[9px] font-bold uppercase tracking-wider font-mono " +
                     (m.status === "AWAITING_CONSENT"
-                      ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                      : "border-red-500/30 bg-red-500/10 text-red-400 animate-pulse")}
+                      ? "border-amber-500/20 bg-amber-500/5 text-amber-400"
+                      : "border-rose-500/20 bg-rose-500/5 text-rose-400 animate-pulse")}
                 >
                   {m.status.replace(/_/g, " ")}
                 </span>
               </div>
 
-              <p className="mt-3 text-xs leading-relaxed text-zinc-400 line-clamp-2">{m.description}</p>
+              <p className="mt-4 text-xs font-light leading-relaxed text-zinc-400 line-clamp-2">{m.description}</p>
 
-              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-zinc-800/60 pt-3 text-[11px]">
-                <div className="rounded-lg bg-zinc-950/60 p-2 border border-zinc-800/40">
-                  <span className="text-zinc-500 block">Active Version</span>
-                  <span className="font-bold text-emerald-400 text-sm">v{m.activeVersion} (Authorized)</span>
+              <div className="mt-5 grid grid-cols-2 gap-3 border-t border-zinc-900 pt-4 text-[10px] font-mono">
+                <div className="rounded-xl bg-black/40 p-3 border border-zinc-900/50">
+                  <span className="text-zinc-500 block text-[9px]">Active Version</span>
+                  <span className="font-bold text-emerald-400 text-xs block mt-0.5">v{m.activeVersion} (Authorized)</span>
                 </div>
-                <div className="rounded-lg bg-zinc-950/60 p-2 border border-zinc-800/40">
-                  <span className="text-zinc-500 block">Proposed Candidate</span>
-                  <span className="font-bold text-amber-400 text-sm">v{m.openVersion} (Locked)</span>
+                <div className="rounded-xl bg-black/40 p-3 border border-zinc-900/50">
+                  <span className="text-zinc-500 block text-[9px]">Proposed Candidate</span>
+                  <span className="font-bold text-amber-400 text-xs block mt-0.5">v{m.openVersion} (Locked)</span>
                 </div>
               </div>
             </div>
@@ -161,14 +161,14 @@ export function MandateExplorer({
       </div>
 
       {/* Active Selected Mandate Full Dossier */}
-      <div className="rounded-2xl border border-red-950/40 bg-zinc-950/90 p-6 shadow-2xl backdrop-blur-xl">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="size-5 text-red-500" />
+      <div className="rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 shadow-xl relative overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-900 pb-5">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="size-5 text-rose-500" />
               <h3 className="text-lg font-bold text-white tracking-tight">{selectedMandate.name}</h3>
             </div>
-            <p className="text-xs text-zinc-400 mt-0.5">On-Chain Governance & Authority Dossier</p>
+            <p className="text-xs text-zinc-400 font-light">On-Chain Governance & Authority Dossier</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -176,55 +176,59 @@ export function MandateExplorer({
               <button
                 onClick={() => handleConsent(selectedMandate)}
                 disabled={isProcessing || !canWrite}
-                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-red-500/20 transition hover:from-red-500 hover:to-amber-500 disabled:opacity-50"
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 px-5 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-500/20 transition hover:scale-[1.02] disabled:opacity-50"
               >
-                <Sparkles className="size-3.5" />
+                <Sparkles className="size-4" />
                 <span>Authorize Consent (Principal)</span>
               </button>
             )}
 
             {selectedMandate.status === "IN_GUARDIAN_CHALLENGE" && (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleVeto(selectedMandate)}
-                  disabled={isProcessing || !canWrite}
-                  className="flex items-center gap-2 rounded-xl border border-red-500/50 bg-red-950/50 px-4 py-2 text-xs font-bold text-red-200 transition hover:bg-red-900/60 disabled:opacity-50"
-                >
-                  <ShieldAlert className="size-3.5 text-red-400" />
-                  <span>Execute Guardian Veto</span>
-                </button>
-              </div>
+              <button
+                onClick={() => handleVeto(selectedMandate)}
+                disabled={isProcessing || !canWrite}
+                className="flex items-center gap-2 rounded-xl border border-rose-500/40 bg-rose-950/20 px-5 py-2.5 text-xs font-bold text-rose-300 transition hover:bg-rose-950/40 disabled:opacity-50"
+              >
+                <ShieldAlert className="size-4 text-rose-400" />
+                <span>Execute Guardian Veto</span>
+              </button>
             )}
           </div>
         </div>
 
         {/* Roles Breakdown */}
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-3.5">
-            <div className="flex items-center gap-1.5 text-zinc-400 text-xs font-medium">
-              <User className="size-3.5 text-emerald-400" />
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-xl border border-zinc-900 bg-black/30 p-4 space-y-2">
+            <div className="flex items-center gap-2 text-zinc-400 text-xs font-semibold">
+              <div className="size-2 rounded-full bg-emerald-500" />
               <span>Principal (Owner)</span>
             </div>
-            <p className="mt-1 font-mono text-xs font-semibold text-zinc-200">{truncateAddress(selectedMandate.principal)}</p>
-            <p className="mt-1 text-[10px] text-zinc-500">Holds sole re-consent authority</p>
+            <p className="font-mono text-xs font-bold text-zinc-200 bg-zinc-900/60 px-2.5 py-1.5 rounded-lg border border-zinc-800/40">
+              {truncateAddress(selectedMandate.principal)}
+            </p>
+            <p className="text-[9px] text-zinc-500">Holds sole re-consent authority</p>
           </div>
 
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-3.5">
-            <div className="flex items-center gap-1.5 text-zinc-400 text-xs font-medium">
-              <Key className="size-3.5 text-blue-400" />
+          <div className="rounded-xl border border-zinc-900 bg-black/30 p-4 space-y-2">
+            <div className="flex items-center gap-2 text-zinc-400 text-xs font-semibold">
+              <div className="size-2 rounded-full bg-blue-500" />
               <span>Delegate (Proposer)</span>
             </div>
-            <p className="mt-1 font-mono text-xs font-semibold text-zinc-200">{truncateAddress(selectedMandate.delegate)}</p>
-            <p className="mt-1 text-[10px] text-zinc-500">Permitted to propose revisions</p>
+            <p className="font-mono text-xs font-bold text-zinc-200 bg-zinc-900/60 px-2.5 py-1.5 rounded-lg border border-zinc-800/40">
+              {truncateAddress(selectedMandate.delegate)}
+            </p>
+            <p className="text-[9px] text-zinc-500">Permitted to propose revisions</p>
           </div>
 
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-3.5">
-            <div className="flex items-center gap-1.5 text-zinc-400 text-xs font-medium">
-              <Lock className="size-3.5 text-amber-400" />
+          <div className="rounded-xl border border-zinc-900 bg-black/30 p-4 space-y-2">
+            <div className="flex items-center gap-2 text-zinc-400 text-xs font-semibold">
+              <div className="size-2 rounded-full bg-amber-500" />
               <span>Guardian (Sentinel)</span>
             </div>
-            <p className="mt-1 font-mono text-xs font-semibold text-zinc-200">{truncateAddress(selectedMandate.guardian)}</p>
-            <p className="mt-1 text-[10px] text-zinc-500">Can veto critical hazard changes</p>
+            <p className="font-mono text-xs font-bold text-zinc-200 bg-zinc-900/60 px-2.5 py-1.5 rounded-lg border border-zinc-800/40">
+              {truncateAddress(selectedMandate.guardian)}
+            </p>
+            <p className="text-[9px] text-zinc-500">Can veto critical hazard changes</p>
           </div>
         </div>
       </div>
