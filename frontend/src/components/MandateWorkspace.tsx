@@ -66,7 +66,7 @@ export function MandateWorkspace() {
   };
 
   const fetchMandateDetails = async (idToSearch = searchId) => {
-    if (!idToSearch.strip()) {
+    if (!idToSearch.trim()) {
       toast.error("Please enter a mandate ID");
       return;
     }
@@ -143,7 +143,7 @@ export function MandateWorkspace() {
 
   const handleProposeVersion = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!proposeText.strip()) return;
+    if (!proposeText.trim()) return;
     try {
       await submitMandateWrite({
         functionName: "propose_mandate_version",
