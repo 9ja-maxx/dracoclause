@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { DragonRadar } from "@/components/DragonRadar";
 import { MandateExplorer, DEMO_MANDATES, MandateDemoData } from "@/components/MandateExplorer";
 import { SemanticDiffInspector } from "@/components/SemanticDiffInspector";
+import { AgentSimulator } from "@/components/AgentSimulator";
 import { TransactionCenter } from "@/components/TransactionCenter";
 import { Flame, Shield, Sparkles, Terminal, Activity, ArrowRight } from "lucide-react";
 import { DRACO_STUDIO_URL, GENLAYER_STUDIONET_CHAIN_ID } from "@/lib/contract/config";
@@ -84,6 +85,11 @@ export default function Home() {
         {/* Semantic Diff & Inspector */}
         <section className="space-y-6">
           <SemanticDiffInspector mandate={selectedMandate} />
+        </section>
+
+        {/* Agent Execution Simulator */}
+        <section className="space-y-6">
+          <AgentSimulator mandate={selectedMandate} />
         </section>
       </main>
 
