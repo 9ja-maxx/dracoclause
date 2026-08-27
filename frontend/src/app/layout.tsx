@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-zinc-950 text-zinc-100 antialiased selection:bg-red-500/30 selection:text-red-200">
+    <html lang="en">
+      <body className="min-h-screen bg-[#f8fafc] text-zinc-950 antialiased selection:bg-rose-100 selection:text-rose-900">
         <WalletProvider>
           <TransactionProvider>
             {children}
-            <Toaster position="top-right" richColors theme="dark" />
+            <Toaster position="top-right" richColors theme="light" />
           </TransactionProvider>
         </WalletProvider>
       </body>
