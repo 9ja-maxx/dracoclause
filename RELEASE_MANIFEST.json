@@ -5,7 +5,10 @@
     "name": "GenLayer StudioNet",
     "chainId": 61999,
     "rpcUrl": "https://studio.genlayer.com/api",
-    "symbol": "GEN"
+    "symbol": "GEN",
+    "deployedAddress": "0x2cf548F7Ec57c58b014ee98466852db63d1D9878",
+    "studioUrl": "https://studio.genlayer.com",
+    "explorerUrl": "https://explorer-studio.genlayer.com/address/0x2cf548F7Ec57c58b014ee98466852db63d1D9878"
   },
   "author": "9ja_maxx",
   "repository": "https://github.com/9ja-maxx/dracoclause",
@@ -16,7 +19,7 @@
   },
   "tests": {
     "suite": "tests/direct/",
-    "coverage": "100% core state transitions, consensus equivalence, and agent verification hooks"
+    "totalTestsPassing": "22 passing assertions across lifecycle, consensus, veto, and agent verification hooks"
   },
   "features": [
     "6-Tier Dragon Semantic Taxonomy",
@@ -24,6 +27,6 @@
     "Guardian Challenge & Veto Window",
     "On-Chain Agent Execution Hook",
     "Permissionless Fail-Closed Expiry Recovery",
-    "StudioNet Native Configuration"
+    "StudioNet Native Deployment"
   ]
 }

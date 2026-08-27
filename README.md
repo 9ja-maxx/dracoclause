@@ -6,21 +6,23 @@
 
 [![Network](https://img.shields.io/badge/Network-GenLayer_StudioNet-red?style=for-the-badge&logo=ethereum)](https://studio.genlayer.com)
 [![Chain ID](https://img.shields.io/badge/Chain_ID-61999-amber?style=for-the-badge)](https://studio.genlayer.com)
+[![Contract](https://img.shields.io/badge/Contract-0x2cf5...9878-emerald?style=for-the-badge)](https://explorer-studio.genlayer.com/address/0x2cf548F7Ec57c58b014ee98466852db63d1D9878)
 [![License](https://img.shields.io/badge/License-MIT-zinc?style=for-the-badge)](LICENSE)
 
 ---
 
-## ⚡ Deployment & Network Configuration
+## ⚡ Live StudioNet Deployment
 
 | Parameter | Specification Value |
 |---|---|
+| **Deployed Contract Address** | [`0x2cf548F7Ec57c58b014ee98466852db63d1D9878`](https://explorer-studio.genlayer.com/address/0x2cf548F7Ec57c58b014ee98466852db63d1D9878) |
 | **Network Name** | `GenLayer StudioNet` |
 | **Chain ID** | `61999` |
 | **RPC Endpoint** | `https://studio.genlayer.com/api` |
 | **Native Currency** | `GEN` |
-| **Intelligent Contract** | `contracts/draco_clause.py` |
+| **Intelligent Contract** | [`contracts/draco_clause.py`](contracts/draco_clause.py) |
 | **Consensus Engine** | GenLayer Multi-Validator Equivalence Consensus (`gl.vm.run_nondet_unsafe`) |
-| **Direct Unit Tests** | `tests/direct/test_dracoclause.py` |
+| **Direct Unit Tests** | [`tests/direct/test_dracoclause.py`](tests/direct/test_dracoclause.py) |
 
 ---
 
