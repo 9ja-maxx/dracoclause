@@ -3,8 +3,8 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&family=Syne:wght@700;800&display=swap');
 
 :root {
-  --background: #030407;
-  --foreground: #f8fafc;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 }
 
 body {
@@ -13,9 +13,9 @@ body {
   font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(225, 29, 72, 0.03) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.03) 0px, transparent 50%),
-    radial-gradient(at 50% 50%, rgba(9, 9, 11, 0.5) 0px, transparent 100%);
+    radial-gradient(at 0% 0%, rgba(225, 29, 72, 0.02) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.02) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.8) 0px, transparent 100%);
   background-attachment: fixed;
 }
 
@@ -27,12 +27,12 @@ code, pre, .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Premium Card & Glassmorphic Utilities */
+/* Premium Light Card & Glassmorphic Utilities */
 .draco-card {
-  background: linear-gradient(180deg, rgba(13, 14, 18, 0.7) 0%, rgba(5, 6, 8, 0.95) 100%);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(225, 29, 72, 0.08);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .draco-card-hover {
@@ -41,22 +41,6 @@ code, pre, .font-mono {
 
 .draco-card-hover:hover {
   transform: translateY(-2px);
-  border-color: rgba(225, 29, 72, 0.25);
-  box-shadow: 0 10px 40px -10px rgba(225, 29, 72, 0.15);
-}
-
-/* Glowing animations */
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
-
-.glow-orb {
-  animation: pulse-glow 8s infinite ease-in-out;
+  border-color: rgba(225, 29, 72, 0.2);
+  box-shadow: 0 10px 30px -10px rgba(225, 29, 72, 0.1);
 }
